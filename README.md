@@ -1,56 +1,225 @@
 # Image Processing API
 
-This project aims to give you a real-world scenario in which you would read and write to your disk via a Node.js express server rather than a database. The project you create serves two purposes: to prepare you for setting up scalable code and architecture for real-world projects and tie together some of the most popular middleware and utilities found in Node.js projects. This project barely touches the surface of what is possible but will prove your ability to use what you’ve learned in real-world scenarios.
+A Node.js Express server built with TypeScript that provides image resizing functionality using the Sharp library. This project demonstrates scalable code architecture, comprehensive testing, and real-world API development practices.
 
-For this project, refactor and test as much as possible while you are building. Since you are using TypeScript and an unfamiliar library, it is sometimes easier to write and build in plain JS to see what your functions return; remember your submission needs to be in TypeScript. As your skills improve, typing in TypeScript will feel more intuitive. Make sure to remove any debugging code from your final submission.
+## Features
 
-## Getting Started
+- **Image Resizing**: Resize JPG images to specified dimensions
+- **Caching**: Automatic caching of processed images to avoid reprocessing
+- **TypeScript**: Full TypeScript implementation with strict type checking
+- **Testing**: Comprehensive test suite using Jasmine
+- **Error Handling**: Robust error handling with meaningful error messages
+- **Validation**: Input validation for all API parameters
+- **Code Quality**: ESLint and Prettier for code formatting and linting
 
-Usually, you would get some starter code to build from, but with this project, it’s your job to prove you can do it from scratch, so all that is being provided for you is a folder of license-free stock images you are welcome to use. If you would like to use your own images for this project, you are welcome to do so, but whoever reviews your project will see your images, and when you display your project online, viewers will also see them.
+## Available Images
 
-You can use your own images or use the ones provided in this repo: [images](images)
+The following images are available for processing:
+- `encenadaport.jpg`
+- `fjord.jpg`
+- `icelandwaterfall.jpg`
+- `palmtunnel.jpg`
+- `santamonica.jpg`
 
-## Instructions
+## Installation
 
-Feel free to attempt to create this project based on the overview and rubric specifications. If you get stuck or prefer structured guidance -- here is a walkthrough to get you up and running!
+1. Clone the repository:
+```bash
+git clone https://github.com/basil51/cd0292-building-a-server-project-starter.git
+cd cd0292-building-a-server-project-starter
+```
 
-1. **Initialize your project.**
-   Add the dependencies required for this project, including Express, TypeScript, Jasmine, Eslint, and Prettier. Complete your package.json file.
-   - Where should your dependencies be placed?
-   - What scripts should you create to take advantage of the dependencies you've added?
-   - Are there other dependencies you would like to add or know you will need to improve your workflow?
-2. **Set up your project structure.**
-   Create folders and files for what you anticipate you will need for the project.
-   - How do you plan to keep your source code and build code separately?
-   - Where will you keep your tests?
-   - How do you plan to name your routes? Utilities?
-3. **Configure your middleware and dependencies.**
-   You have quite a few dependencies that all need to work together. Sometimes it's easiest to write some simple js functions to test that all of your dependencies work together before you begin adding any functionality.
+2. Install dependencies:
+```bash
+npm install
+```
 
-   - Does your TypeScript compile?
-   - Do your Eslint and Prettier scripts work?
-   - Are you able to write and pass
+3. Build the project:
+```bash
+npm run build
+```
 
-4. **Set up your server and create an API endpoint.** Even though this application is fairly straightforward, you still want to set it up in a scalable way. How can you set up your server and route so that your project remains scalable? Only one endpoint is required. It's best to create this and test that it is working before you move on.
+4. Start the server:
+```bash
+npm start
+```
 
-5. **Install [Sharp](https://www.npmjs.com/package/sharp) and configure endpoint.**
-   Create a separate module for your processing functionality and import it into your route. You are only required to add resizing, but you may add additional processing if you choose to extend your application. You are only required to work with jpg files, so keep that in mind if you choose to use your own images and they are other formats.
-   - Pay close attention to if you need to use asynchronous code or not. If you do, make sure you stay consistent throughout your application.
-   - There is limited information on using Sharp with TypeScript, but don't let that be a blocker. Think about what type the Sharp constructor would return. Have a look at the [Sharp Constructor documentation](https://sharp.pixelplumbing.com/api-constructor) and the examples it provides.
-6. **Write your tests.**
-   If you haven't already been writing unit tests, now would be the time to start. Think about what you should test? At a minimum, you should have at least one test for your endpoint and at least one test for your image processing, but there are many different tests you could create.
-7. **Add caching.**
-   Add caching to your application so that repeated requests to your endpoint use pre-stored images rather than regenerating a new image each time.
-8. **Test, Debug, and Refactor.**
-   Think of edge-cases for your project and how someone may access your project. Should they get different error messages based on what's wrong? Make certain that your user isn't left in the dark when something goes wrong.
-   - Do all of your tests still pass?
-   - Does stopping and restarting your server cause any issues?
-   - Does your user get feedback when something goes wrong?
-   - Is your code easy to follow? Comments?
-   - Is your API production-ready?
-9. **Build, Document, and Submit.**
-   If everything else has gone well, you should be able to compile your typescript and start up your production server to test that everything still works as expected. Make sure you've provided all necessary information in your readme file, so your reviewer knows how to test your API. If everything works and your documentation is complete, you're ready to submit!
-   **_Congratulations!_**
+The server will start on port 3000 by default.
+
+## Development
+
+For development with auto-reload:
+```bash
+npm run dev
+```
+
+## API Endpoints
+
+### Health Check
+- **GET** `/health`
+- Returns server status
+
+**Response:**
+```json
+{
+  "status": "OK",
+  "message": "Image Processing API is running"
+}
+```
+
+### List Available Images
+- **GET** `/api/images`
+- Returns list of available images for processing
+
+**Response:**
+```json
+{
+  "success": true,
+  "images": ["encenadaport.jpg", "fjord.jpg", "icelandwaterfall.jpg", "palmtunnel.jpg", "santamonica.jpg"],
+  "message": "Found 5 available images"
+}
+```
+
+### Resize Image
+- **GET** `/api/images/resize`
+- Resizes an image to specified dimensions
+
+**Query Parameters:**
+- `filename` (required): Name of the image file (JPG only)
+- `width` (required): Target width in pixels (positive integer)
+- `height` (required): Target height in pixels (positive integer)
+
+**Example:**
+```
+GET /api/images/resize?filename=encenadaport.jpg&width=200&height=200
+```
+
+**Success Response:**
+- Returns the resized image as a JPEG file
+
+**Error Responses:**
+```json
+{
+  "success": false,
+  "error": "Missing required parameters. Please provide filename, width, and height."
+}
+```
+
+```json
+{
+  "success": false,
+  "error": "Only JPG images are supported"
+}
+```
+
+```json
+{
+  "success": false,
+  "error": "Image 'nonexistent.jpg' not found"
+}
+```
+
+## Testing
+
+Run the test suite:
+```bash
+npm test
+```
+
+The test suite includes:
+- Unit tests for image processing functionality
+- API endpoint tests
+- Validation tests
+- Error handling tests
+
+## Code Quality
+
+### Linting
+```bash
+npm run lint
+npm run lint:fix
+```
+
+### Formatting
+```bash
+npm run format
+npm run format:check
+```
+
+## Project Structure
+
+```
+├── src/
+│   ├── index.ts              # Main server file
+│   ├── routes/
+│   │   └── imageRoutes.ts    # Image processing routes
+│   ├── middleware/
+│   │   ├── validation.ts     # Input validation middleware
+│   │   └── errorHandler.ts   # Error handling middleware
+│   └── utils/
+│       └── imageProcessor.ts # Image processing logic
+├── tests/
+│   ├── imageProcessor.spec.ts # Unit tests for image processing
+│   └── routes.spec.ts        # API endpoint tests
+├── images/                   # Input images directory
+├── images/thumb/            # Processed images cache
+└── dist/                    # Compiled JavaScript output
+```
+
+## Caching
+
+The API automatically caches processed images in the `images/thumb/` directory. If a request is made for the same image with the same dimensions, the cached version will be returned instead of reprocessing the image.
+
+## Error Handling
+
+The API provides comprehensive error handling for:
+- Missing or invalid parameters
+- Non-existent images
+- Unsupported image formats
+- Invalid dimensions
+- Server errors
+
+All errors return JSON responses with descriptive error messages.
+
+## Usage Examples
+
+### Using curl
+
+1. **Check server health:**
+```bash
+curl http://localhost:3000/health
+```
+
+2. **List available images:**
+```bash
+curl http://localhost:3000/api/images
+```
+
+3. **Resize an image:**
+```bash
+curl "http://localhost:3000/api/images/resize?filename=encenadaport.jpg&width=300&height=200" -o resized_image.jpg
+```
+
+### Using a web browser
+
+1. **Health check:** http://localhost:3000/health
+2. **List images:** http://localhost:3000/api/images
+3. **Resize image:** http://localhost:3000/api/images/resize?filename=encenadaport.jpg&width=200&height=200
+
+## Technologies Used
+
+- **Node.js**: Runtime environment
+- **Express.js**: Web framework
+- **TypeScript**: Type-safe JavaScript
+- **Sharp**: High-performance image processing
+- **Jasmine**: Testing framework
+- **ESLint**: Code linting
+- **Prettier**: Code formatting
+- **Supertest**: HTTP testing
+
+## License
+
+This project is licensed under the ISC License - see the [LICENSE.txt](LICENSE.txt) file for details.
 
 ## Version Control
 
